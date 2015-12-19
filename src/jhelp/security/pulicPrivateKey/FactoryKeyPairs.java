@@ -1,9 +1,12 @@
 /**
- * Project : JHelpSecurity<br>
- * Package : jhelp.security.pulicPrivateKey<br>
- * Class : FactoryKeyPairs<br>
- * Date : 16 juil. 2010<br>
- * By JHelp
+ * <h1>License :</h1> <br>
+ * The following code is deliver as is. I take care that code compile and work, but I am not responsible about any damage it may
+ * cause.<br>
+ * You can use, modify, the code as your need for any usage. But you can't do any action that avoid me or other person use,
+ * modify this code. The code is free for usage and modification, you can't change that fact.<br>
+ * <br>
+ * 
+ * @author JHelp
  */
 package jhelp.security.pulicPrivateKey;
 
@@ -75,7 +78,8 @@ public class FactoryKeyPairs
     * @throws IOException
     *            On writing issue
     */
-   public static <PUBLIC_KEY extends JHelpPublicKey> void generateCertificate(final JHelpKeyPairs<PUBLIC_KEY> keyPair, final OutputStream outputStream) throws IOException
+   public static <PUBLIC_KEY extends JHelpPublicKey> void generateCertificate(final JHelpKeyPairs<PUBLIC_KEY> keyPair, final OutputStream outputStream)
+         throws IOException
    {
       final NoiseOutputStream noiseOutputStream = new NoiseOutputStream(outputStream);
 

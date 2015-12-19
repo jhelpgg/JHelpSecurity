@@ -1,9 +1,12 @@
 /**
- * Project : JHelpSecurity<br>
- * Package : jhelp.security.utilities<br>
- * Class : SecureIP<br>
- * Date : 9 nov. 2010<br>
- * By JHelp
+ * <h1>License :</h1> <br>
+ * The following code is deliver as is. I take care that code compile and work, but I am not responsible about any damage it may
+ * cause.<br>
+ * You can use, modify, the code as your need for any usage. But you can't do any action that avoid me or other person use,
+ * modify this code. The code is free for usage and modification, you can't change that fact.<br>
+ * <br>
+ * 
+ * @author JHelp
  */
 package jhelp.security.utilities;
 
@@ -27,15 +30,42 @@ import jhelp.util.io.UtilIO;
 public class SecureIP
 {
    /**
-    * Encrypt local IP
+    * Decrypt an IP
     * 
-    * @return Encrypted local IP
+    * @param encoded
+    *           Zncoded IP
+    * @return Clear IP
     * @throws IOException
-    *            On encryption issue
+    *            On decryption issue
     */
-   public static String encryptLocalIP() throws IOException
+   public static InetAddress decryptIP(final String encoded) throws IOException
    {
-      return SecureIP.encryptIP(InetAddress.getLocalHost());
+      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(JHelpBase.decode(encoded));
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+      DESencrypt.DES.decrypt("JHelp", byteArrayInputStream, byteArrayOutputStream);
+
+      final byte[] message = byteArrayOutputStream.toByteArray();
+      final int length = message.length - 16;
+      final byte[] crypted = new byte[length];
+      final byte[] byteRnd = new byte[8];
+      final byte[] byteTime = new byte[8];
+
+      System.arraycopy(message, 0, byteRnd, 0, 4);
+      System.arraycopy(message, 4, byteTime, 0, 4);
+      System.arraycopy(message, 8, crypted, 0, length);
+      System.arraycopy(message, 8 + length, byteTime, 4, 4);
+      System.arraycopy(message, 12 + length, byteRnd, 4, 4);
+
+      final double rnd = UtilIO.byteArrayToDouble(byteRnd);
+      final long time = UtilIO.byteArrayToLong(byteTime);
+
+      byteArrayInputStream = new ByteArrayInputStream(crypted);
+      byteArrayOutputStream = new ByteArrayOutputStream();
+
+      UtilEncrpyt.tripleDESdecrypt(String.valueOf(time), "JHelp", String.valueOf(rnd), byteArrayInputStream, byteArrayOutputStream);
+
+      return InetAddress.getByAddress(byteArrayOutputStream.toByteArray());
    }
 
    /**
@@ -47,23 +77,23 @@ public class SecureIP
     * @throws IOException
     *            On encryption issue
     */
-   public static String encryptIP(InetAddress address) throws IOException
+   public static String encryptIP(final InetAddress address) throws IOException
    {
-      byte[] ip = address.getAddress();
-      double rnd = Math.random();
-      long time = System.currentTimeMillis();
+      final byte[] ip = address.getAddress();
+      final double rnd = Math.random();
+      final long time = System.currentTimeMillis();
 
       ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ip);
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
       UtilEncrpyt.tripleDESencrypt(String.valueOf(time), "JHelp", String.valueOf(rnd), byteArrayInputStream, byteArrayOutputStream);
-      byte[] crypted = byteArrayOutputStream.toByteArray();
+      final byte[] crypted = byteArrayOutputStream.toByteArray();
 
-      int length = crypted.length;
-      byte[] message = new byte[length + 16];
+      final int length = crypted.length;
+      final byte[] message = new byte[length + 16];
 
-      byte[] byteRnd = UtilIO.doubleToByteArray(rnd);
-      byte[] byteTime = UtilIO.longToByteArray(time);
+      final byte[] byteRnd = UtilIO.doubleToByteArray(rnd);
+      final byte[] byteTime = UtilIO.longToByteArray(time);
 
       System.arraycopy(byteRnd, 0, message, 0, 4);
       System.arraycopy(byteTime, 0, message, 4, 4);
@@ -80,41 +110,14 @@ public class SecureIP
    }
 
    /**
-    * Decrypt an IP
+    * Encrypt local IP
     * 
-    * @param encoded
-    *           Zncoded IP
-    * @return Clear IP
+    * @return Encrypted local IP
     * @throws IOException
-    *            On decryption issue
+    *            On encryption issue
     */
-   public static InetAddress decryptIP(String encoded) throws IOException
+   public static String encryptLocalIP() throws IOException
    {
-      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(JHelpBase.decode(encoded));
-      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-      DESencrypt.DES.decrypt("JHelp", byteArrayInputStream, byteArrayOutputStream);
-
-      byte[] message = byteArrayOutputStream.toByteArray();
-      int length = message.length - 16;
-      byte[] crypted = new byte[length];
-      byte[] byteRnd = new byte[8];
-      byte[] byteTime = new byte[8];
-
-      System.arraycopy(message, 0, byteRnd, 0, 4);
-      System.arraycopy(message, 4, byteTime, 0, 4);
-      System.arraycopy(message, 8, crypted, 0, length);
-      System.arraycopy(message, 8 + length, byteTime, 4, 4);
-      System.arraycopy(message, 12 + length, byteRnd, 4, 4);
-
-      double rnd = UtilIO.byteArrayToDouble(byteRnd);
-      long time = UtilIO.byteArrayToLong(byteTime);
-
-      byteArrayInputStream = new ByteArrayInputStream(crypted);
-      byteArrayOutputStream = new ByteArrayOutputStream();
-
-      UtilEncrpyt.tripleDESdecrypt(String.valueOf(time), "JHelp", String.valueOf(rnd), byteArrayInputStream, byteArrayOutputStream);
-
-      return InetAddress.getByAddress(byteArrayOutputStream.toByteArray());
+      return SecureIP.encryptIP(InetAddress.getLocalHost());
    }
 }

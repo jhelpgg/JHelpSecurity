@@ -1,9 +1,12 @@
 /**
- * Project : JHelpSecurity<br>
- * Package : jhelp.security.pulicPrivateKey<br>
- * Class : RSAPublicKey<br>
- * Date : 25 juil. 2010<br>
- * By JHelp
+ * <h1>License :</h1> <br>
+ * The following code is deliver as is. I take care that code compile and work, but I am not responsible about any damage it may
+ * cause.<br>
+ * You can use, modify, the code as your need for any usage. But you can't do any action that avoid me or other person use,
+ * modify this code. The code is free for usage and modification, you can't change that fact.<br>
+ * <br>
+ * 
+ * @author JHelp
  */
 package jhelp.security.pulicPrivateKey;
 
@@ -233,7 +236,8 @@ class RSAPublicKey
     * @see jhelp.security.pulicPrivateKey.JHelpPublicKey#startMakup(java.lang.String, java.util.Hashtable)
     */
    @Override
-   public void startMakup(final String markupName, final Hashtable<String, String> parameters) throws MissingRequiredParameterException, InvalidParameterValueException
+   public void startMakup(final String markupName, final Hashtable<String, String> parameters) throws MissingRequiredParameterException,
+         InvalidParameterValueException
    {
       if(markupName.equals(RSAPublicKey.MARKUP_RSA_PUBLIC_KEY) == false)
       {

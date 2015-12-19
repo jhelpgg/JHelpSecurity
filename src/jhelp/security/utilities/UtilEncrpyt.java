@@ -1,9 +1,12 @@
 /**
- * Project : JHelpSecurity<br>
- * Package : jhelp.security.utilities<br>
- * Class : UtilEncrpyt<br>
- * Date : 25 juil. 2010<br>
- * By JHelp
+ * <h1>License :</h1> <br>
+ * The following code is deliver as is. I take care that code compile and work, but I am not responsible about any damage it may
+ * cause.<br>
+ * You can use, modify, the code as your need for any usage. But you can't do any action that avoid me or other person use,
+ * modify this code. The code is free for usage and modification, you can't change that fact.<br>
+ * <br>
+ * 
+ * @author JHelp
  */
 package jhelp.security.utilities;
 
@@ -70,6 +73,10 @@ public class UtilEncrpyt
     */
    public static void decrypt(final String password, final File source, final File destination)
    {
+      ZipInputStream zipInputStream = null;
+      ZipEntry zipEntry = null;
+      FileOutputStream fileOutputStream = null;
+
       try
       {
          final File privateKey = UtilIO.obtainExternalFile("tempUtilEncrpyt");
@@ -78,17 +85,19 @@ public class UtilEncrpyt
          final String name = source.getName();
          final String other = UtilText.concatenate(password, "_JHELP_", name);
 
-         final ZipInputStream zipInputStream = new ZipInputStream(new NoiseInputStream(new NoiseInputStream(new NoiseInputStream(new FileInputStream(source)))));
-         ZipEntry zipEntry = zipInputStream.getNextEntry();
+         zipInputStream = new ZipInputStream(new NoiseInputStream(new NoiseInputStream(new NoiseInputStream(new FileInputStream(source)))));
+         zipEntry = zipInputStream.getNextEntry();
          if(zipEntry.getName().equals("a") == false)
          {
             throw new Exception("First is " + zipEntry.getName());
          }
 
-         FileOutputStream fileOutputStream = new FileOutputStream(privateKey);
+         fileOutputStream = new FileOutputStream(privateKey);
          UtilEncrpyt.tripleDESdecrypt(password, name, other, zipInputStream, fileOutputStream);
          zipInputStream.closeEntry();
+         zipEntry = null;
          fileOutputStream.close();
+         fileOutputStream = null;
 
          final JHelpKeyPairs<JHelpPublicKey> keyPair = FactoryKeyPairs.obtainKeyPair(FactoryKeyPairs.ALGORITHM_RSA);
          final byte[] key = DESencrypt.computeKey(password);
@@ -105,14 +114,47 @@ public class UtilEncrpyt
          fileOutputStream = new FileOutputStream(destination);
          keyPair.decrypt(zipInputStream, fileOutputStream);
          zipInputStream.closeEntry();
-         fileOutputStream.close();
-
-         zipInputStream.close();
+         zipEntry = null;
       }
       catch(final Exception exception)
       {
          Debug.printException(exception);
          throw new RuntimeException();
+      }
+      finally
+      {
+         if(zipInputStream != null)
+         {
+            if(zipEntry != null)
+            {
+               try
+               {
+                  zipInputStream.closeEntry();
+               }
+               catch(final Exception exception)
+               {
+               }
+            }
+
+            try
+            {
+               zipInputStream.close();
+            }
+            catch(final Exception exception)
+            {
+            }
+         }
+
+         if(fileOutputStream != null)
+         {
+            try
+            {
+               fileOutputStream.close();
+            }
+            catch(final Exception exception)
+            {
+            }
+         }
       }
    }
 
@@ -144,7 +186,8 @@ public class UtilEncrpyt
          final File privateKey = UtilIO.obtainExternalFile("tempUtilEncrpyt");
 
          FileInputStream fileInputStream = new FileInputStream(privateKey);
-         final ZipOutputStream zipOutputStream = new ZipOutputStream(new NoiseOutputStream(new NoiseOutputStream(new NoiseOutputStream(new FileOutputStream(destination)))));
+         final ZipOutputStream zipOutputStream = new ZipOutputStream(new NoiseOutputStream(new NoiseOutputStream(new NoiseOutputStream(new FileOutputStream(
+               destination)))));
 
          ZipEntry zipEntry = new ZipEntry("a");
          zipOutputStream.putNextEntry(zipEntry);
@@ -188,7 +231,7 @@ public class UtilEncrpyt
     */
    public static void main(final String[] args)
    {
-      if(args == null || args.length < 4)
+      if((args == null) || (args.length < 4))
       {
          UtilEncrpyt.printUsage();
 
@@ -256,7 +299,8 @@ public class UtilEncrpyt
     * @throws IOException
     *            On read/write issue
     */
-   public static void tripleDESdecrypt(final String key1, final String key2, final String key3, final InputStream inputStream, final OutputStream outputStream) throws IOException
+   public static void tripleDESdecrypt(final String key1, final String key2, final String key3, final InputStream inputStream, final OutputStream outputStream)
+         throws IOException
    {
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       DESencrypt.DES.decrypt(key1, inputStream, byteArrayOutputStream);
@@ -285,7 +329,8 @@ public class UtilEncrpyt
     * @throws IOException
     *            On read/write issue
     */
-   public static void tripleDESencrypt(final String key1, final String key2, final String key3, final InputStream inputStream, final OutputStream outputStream) throws IOException
+   public static void tripleDESencrypt(final String key1, final String key2, final String key3, final InputStream inputStream, final OutputStream outputStream)
+         throws IOException
    {
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       DESencrypt.DES.encrypt(key3, inputStream, byteArrayOutputStream);
