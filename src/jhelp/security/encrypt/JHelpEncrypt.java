@@ -36,9 +36,9 @@ public interface JHelpEncrypt
     * @throws IOException
     *            On reading/writing problem
     */
-   public void decrypt(byte[] key, InputStream encryptStream, OutputStream clearStream) throws IOException;;
+   public void decrypt(byte[] key, InputStream encryptStream, OutputStream clearStream) throws IOException;
 
-   /**
+    /**
     * Encrypt a stream
     * 
     * @param key
@@ -50,5 +50,5 @@ public interface JHelpEncrypt
     * @throws IOException
     *            On reading/writing problem
     */
-   public void encrypt(byte[] key, InputStream clearStream, OutputStream encryptStream) throws IOException;;
+   public void encrypt(byte[] key, InputStream clearStream, OutputStream encryptStream) throws IOException;
 }

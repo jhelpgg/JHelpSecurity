@@ -63,7 +63,7 @@ public class JHelpBase
     *           Character
     * @return Character index
     */
-   private static final int indexOf(final char c)
+   private static int indexOf(final char c)
    {
       for(int index = 0; index < 64; index++)
       {

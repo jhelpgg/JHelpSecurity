@@ -160,7 +160,7 @@ class RSAKeyPair
       try
       {
          final File file = UtilIO.obtainExternalFile(storeName);
-         if(file.exists() == false)
+         if(!file.exists())
          {
             throw new FileNotFoundException(UtilText.concatenate("The specified store name ", storeName, " doesn't exists ! Path=", file.getAbsolutePath()));
          }
@@ -303,7 +303,7 @@ class RSAKeyPair
       try
       {
          final File file = UtilIO.obtainExternalFile(storeName);
-         if(UtilIO.createFile(file) == false)
+         if(!UtilIO.createFile(file))
          {
             throw new FileNotFoundException(UtilText.concatenate("The specified store name ", storeName, " can't be created ! Path=", file.getAbsolutePath()));
          }

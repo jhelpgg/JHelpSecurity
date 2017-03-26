@@ -147,7 +147,8 @@ class RSAPublicKey
    @Override
    public void fromXML(final MarkupXML markupXML) throws ExceptionXML
    {
-      if(markupXML.getName().equals(RSAPublicKey.MARKUP_RSA_PUBLIC_KEY) == false)
+      if(!markupXML.getName()
+                   .equals(RSAPublicKey.MARKUP_RSA_PUBLIC_KEY))
       {
          throw new ExceptionXML(UtilText.concatenate("The markup ", markupXML.getName(), " is not for RSAPublicKey"));
       }
@@ -239,7 +240,7 @@ class RSAPublicKey
    public void startMakup(final String markupName, final Hashtable<String, String> parameters) throws MissingRequiredParameterException,
          InvalidParameterValueException
    {
-      if(markupName.equals(RSAPublicKey.MARKUP_RSA_PUBLIC_KEY) == false)
+      if(!markupName.equals(RSAPublicKey.MARKUP_RSA_PUBLIC_KEY))
       {
          throw new RuntimeException(UtilText.concatenate("The markup ", markupName, " is not for RSAPublicKey"));
       }

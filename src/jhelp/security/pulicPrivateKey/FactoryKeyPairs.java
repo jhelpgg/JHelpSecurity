@@ -56,7 +56,7 @@ public class FactoryKeyPairs
     */
    public static JHelpPublicKey desrializePublicKey(final InputStream inputStream, final String algorithm) throws IOException
    {
-      if(FactoryKeyPairs.ALGORITHM_RSA.equals(algorithm.toLowerCase()) == true)
+      if(FactoryKeyPairs.ALGORITHM_RSA.equals(algorithm.toLowerCase()))
       {
          final RSAPublicKey rsaPublicKey = new RSAPublicKey(null);
          rsaPublicKey.deserialize(inputStream);

@@ -87,7 +87,8 @@ public class UtilEncrpyt
 
          zipInputStream = new ZipInputStream(new NoiseInputStream(new NoiseInputStream(new NoiseInputStream(new FileInputStream(source)))));
          zipEntry = zipInputStream.getNextEntry();
-         if(zipEntry.getName().equals("a") == false)
+         if(!zipEntry.getName()
+                     .equals("a"))
          {
             throw new Exception("First is " + zipEntry.getName());
          }
@@ -106,7 +107,8 @@ public class UtilEncrpyt
 
          UtilIO.createFile(destination);
          zipEntry = zipInputStream.getNextEntry();
-         if(zipEntry.getName().equals("b") == false)
+         if(!zipEntry.getName()
+                     .equals("b"))
          {
             throw new Exception("Second is " + zipEntry.getName());
          }
@@ -131,7 +133,7 @@ public class UtilEncrpyt
                {
                   zipInputStream.closeEntry();
                }
-               catch(final Exception exception)
+               catch(final Exception ignored)
                {
                }
             }
@@ -140,7 +142,7 @@ public class UtilEncrpyt
             {
                zipInputStream.close();
             }
-            catch(final Exception exception)
+            catch(final Exception ignored)
             {
             }
          }
@@ -151,7 +153,7 @@ public class UtilEncrpyt
             {
                fileOutputStream.close();
             }
-            catch(final Exception exception)
+            catch(final Exception ignored)
             {
             }
          }
@@ -243,11 +245,11 @@ public class UtilEncrpyt
          boolean encrypt = true;
          final String mode = args[0].toLowerCase();
 
-         if(UtilEncrpyt.MODE_ENCRYPT.equals(mode) == true)
+         if(UtilEncrpyt.MODE_ENCRYPT.equals(mode))
          {
             encrypt = true;
          }
-         else if(UtilEncrpyt.MODE_DECRYPT.equals(mode) == true)
+         else if(UtilEncrpyt.MODE_DECRYPT.equals(mode))
          {
             encrypt = false;
          }
@@ -262,7 +264,7 @@ public class UtilEncrpyt
          final File source = new File(args[2]);
          final File destination = new File(args[3]);
 
-         if(encrypt == true)
+         if(encrypt)
          {
             UtilEncrpyt.encrypt(password, source, destination);
          }
